@@ -1,0 +1,24 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: test-cr
+rules:
+- apiGroups: # APIのアクセス権の設定
+  - ""
+  resources:
+  - pods
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - update
+  - patch
+  - get
+  - watch
+  - list
+- apiGroups: ['policy'] # PodSecurityPolicyの設定
+  resources: ['podsecuritypolicies']
+  verbs: ['use']
+  resourceNames:
+  # GKEの場合はgce.privileged
+  - privileged

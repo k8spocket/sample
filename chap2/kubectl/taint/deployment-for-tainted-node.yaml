@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: amd-nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: amd-nginx
+  template:
+    metadata:
+      labels:
+        app: amd-nginx
+    spec:
+      containers:
+      - name: amd-nginx
+        image: nginx
+      # Taints amd.com/cpuにNoSchedule効果が設定されたNodeへの割り当てを許可する
+      # (tolerationsの設定だけではamd.com/cpuのtaintを持つNodeにも割り当てを許可するだけで、
+      # 他のNodeにも割り当てられる)
+      tolerations:
+      - key: "amd.com/cpu"
+        operator: "Equal"
+        effect: "NoSchedule"
+      # ラベルamd.com/cpuが設定されているNodeのみへ割り当てる
+      nodeSelector:
+        amd.com/cpu: ""

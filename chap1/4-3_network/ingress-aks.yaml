@@ -1,0 +1,17 @@
+﻿apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: hello-ing
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+  rules:
+  # az aks show --resource-group <Azureのリソースグループ> --name <AKSのリソース名> \
+  #   --query addonProfiles.httpApplicationRouting.config.HTTPApplicationRoutingZoneName -o table
+  - host: test.92f1816b430b4f7ab563.westus2.aksapp.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: hello-svc
+          servicePort: 80

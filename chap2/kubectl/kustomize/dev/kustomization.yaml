@@ -1,0 +1,63 @@
+# 1. ベースとなるマニフェストのあるディレクトリ
+bases:
+- ./../base
+
+# 2. デプロイするネームスペース
+namespace: dev
+# 3. リソース名の前に付与するプレフィックス
+#namePrefix: dev-
+# 4. リソース名の前に付与するプレフィックス
+#nameSuffix: -v1.0
+# 5. リソースに付与するラベル
+commonLabels:
+  app: myapp
+  env: dev
+
+# 6. ConfigMapを置換or上書き
+configMapGenerator:
+- name: demo-cm  # ConfigMapリソース名
+  #  設定上書きの挙動merge(既存の設定とマージ) or replace(既存の設定を置換)
+  #  新規作成の場合、behaviorフィールドは不要
+  behavior: merge
+  literals: # ConfigMapの値を直接指定
+  - param_overwrite=from_kustomize_val1
+  env: configmap.env # ファイルのリストから読み込み
+  files: # 設定ファイルを読み込み
+  - nginx.conf
+
+# 7. Secretの作成
+secretGenerator:
+- name: mysecrets # Secretリソース名
+  #  設定上書きの挙動merge(既存の設定とマージ) or replace(既存の設定を置換)
+  #  新規作成の場合、behaviorフィールドは不要
+  # behavior: replace
+  literals: # Secretの値を直接指定
+  - db_pass=passwd
+  - admin_pass=passwd
+  env: secret.env # ファイルのリストから読み込み
+  files: # ファイルの内容をSecret化(TLS証明書などで利用)
+  - key.pem
+
+# 8. イメージの差し替え
+images:
+- name: gihyo/kustdemo  # 置換されるイメージ名
+  newName: gihyo/devimg # 置換するイメージ名
+  newTag:  latest       # 置換するタグ
+
+# 9. 追加するKubernetesマニフェストの記述
+resources:
+- resource.yaml
+
+# 10. 変数の追加(kustomizeによりフィールド値が変更になった場合でも追従)
+vars:
+- name: ENVTEST # 変数名
+  objref:       # 参照するリソースの指定
+    kind: Service
+    name: kustdemo
+    apiVersion: v1
+  fieldref:     # 参照するフィールドの指定(省略時metadata.name)
+    fieldpath: metadata.name
+
+# 11. 適用するパッチのリスト
+patchesStrategicMerge:
+- patch.yaml

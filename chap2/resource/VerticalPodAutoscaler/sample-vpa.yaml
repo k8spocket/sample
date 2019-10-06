@@ -1,0 +1,14 @@
+apiVersion: autoscaling.k8s.io/v1beta2
+kind: VerticalPodAutoscaler
+metadata:
+  name: sample-vpa
+spec:
+  targetRef:
+    # 1. リソースを変更するターゲット
+    #    リソース種別、リソース名、APIバージョンを指定
+    apiVersion: apps/v1
+    kind: Deployment
+    name: sample-deploy
+  # 2. 更新ポリシー
+  updatePolicy:
+    updateMode: "Auto"

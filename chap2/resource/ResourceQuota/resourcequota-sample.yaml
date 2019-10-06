@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  # 1. Resource Quotaの名前を指定
+  name: object-quota-demo
+spec:
+  # 2. ネームスペース内のリソース上限を指定
+  hard:
+    cpu: 10 # CPU requestsの合計上限
+    limits.cpu: 20 # CPU limitsの合計上限
+    memory: 10Gi # メモリrequestsの合計上限
+    limits.memory: 20Gi # メモリlimitsの合計上限
+    count/pods: "20" # Pod数
+    persistentvolumeclaims: "10" # PersistenceVolumeClaimの合計数
+    requests.storage: 50Gi # PersitentVolumeClaimの合計容量

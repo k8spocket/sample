@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-sample
+  annotations:
+    # 1. URLをリダイレクトする場合、リダイレクト先のパスを指定
+    ingress.kubernetes.io/rewrite-target: /accesspath
+spec:
+  # 2. フォワードするルールを指定
+  rules:
+  # 3. ホスト名を指定
+  - host: test.example.com
+    http:
+      # 4. パスを指定
+      paths:
+      # 5. DNSにアクセスされるパスを指定
+      - path: /srcpath
+        # 6. アクセスをフォワードするサービス名とポートを指定
+        backend:
+          serviceName: nginx-ingress-svc
+          servicePort: 80
+  # 7. HTTPをingressで暗号(HTTPS)化する
+  tls:
+  - hosts:
+    # 8. ホスト名を指定
+    - test.example.com
+    # 9. 証明書と秘密伴を管理するシークレットを指定
+    secretName: test.example.com-secret

@@ -1,0 +1,81 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-promtail
+  labels:
+    app: promtail
+data:
+  promtail.yaml: |
+    server:
+      http_listen_port: 9080
+    scrape_configs:
+    - job_name: system
+      entry_parser: raw
+      static_configs:
+      - targets:
+        - localhost
+        labels:
+          job: promtail-sidecar
+          __path__: /var/log/access.log
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log/nginx
+      - name: promtail
+        image: "grafana/promtail:master"
+        imagePullPolicy: Always
+        args:
+        - "-config.file=/etc/promtail/promtail.yaml"
+        - "-client.url=http://loki.loki.svc.cluster.local:3100/api/prom/push"
+        volumeMounts:
+        - name: config
+          mountPath: /etc/promtail
+        - name: varlog
+          mountPath: /var/log
+        ports:
+        - containerPort: 9080
+          name: http-metrics
+      volumes:
+      - name: config
+        configMap:
+          name: config-promtail
+      - name: varlog
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+  selector:
+    app: nginx

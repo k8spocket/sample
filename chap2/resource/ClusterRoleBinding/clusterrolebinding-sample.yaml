@@ -1,0 +1,19 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  # 1. リソース名を指定
+  name: read-secrets-global
+subjects:
+- kind: Group # 2. グループを指定
+  name: manager # nameは大文字小文字を区別
+  apiGroup: rbac.authorization.k8s.io
+- kind: User # 3. ユーザーを指定
+  name: yamada
+  apiGroup: rbac.authorization.k8s.io
+- kind: ServiceAccount # 4. ServiceAccountを指定
+  name: default
+  namespace: default
+roleRef:
+  kind: ClusterRole # 5. 紐付けるClusterRoleを指定
+  name: secret-reader
+  apiGroup: rbac.authorization.k8s.io

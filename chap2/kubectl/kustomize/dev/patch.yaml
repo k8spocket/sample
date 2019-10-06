@@ -1,0 +1,21 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: kustdemo
+spec:
+  template:
+    spec:
+      containers:
+      - name: kustdemo
+        # 開発用の環境変数の追加
+        env:
+        - name: patched.env
+          value: dev
+        - name: envtest
+          value: $(ENVTEST)
+        # 開発用のリソース制限
+        resources:
+          limits:
+            cpu: 0.5
+            memory: 128Mi
+

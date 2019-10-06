@@ -1,0 +1,19 @@
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  # 1. 対象となるネームスペースを指定
+  namespace: default
+  # 2. ロール名を指定
+  name: read-pods
+
+# 3. Roleと紐付ける対象を指定
+subjects:
+- kind: User
+  name: jane # nameは大文字小文字を区別
+  apiGroup: rbac.authorization.k8s.io
+  
+# 4. 紐付けるロールを指定
+roleRef:
+  kind: Role # RoleまたはClusterRoleを指定
+  name: pod-reader # 紐付けたいRoleまたはClusterRoleの名前を指定
+  apiGroup: rbac.authorization.k8s.io

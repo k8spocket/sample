@@ -1,0 +1,33 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: kustdemo
+  labels: # 5. ラベル置換
+    app: kustdemo
+spec:
+  selector:
+    matchLabels: # 5. ラベル置換
+      app: kustdemo
+  template:
+    metadata:
+      labels: # 5. ラベル置換
+        app: kustdemo
+    spec:
+      containers:
+      - name: kustdemo
+        image: gihyo/kustdemo
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: demo-config
+          mountPath: /config
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysecrets # 8. Secret置換
+              key:  db_pass
+      volumes:
+      - name: "demo-config"
+        configMap:
+          name: "demo-cm"

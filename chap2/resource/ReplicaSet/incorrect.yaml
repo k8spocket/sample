@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: myapp-replicaset
+spec:
+  # 複製するPodの数
+  replicas: 3
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      # 作成されるPodのラベル
+      labels:
+        app: myapp2
+    spec:
+      containers:
+        - name: myapp-container
+          image: busybox
+          command: ['sh', '-c', 'echo Hello Kubernetes! && sleep 3600']

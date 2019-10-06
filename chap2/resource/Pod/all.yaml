@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    app: myapp
+spec:
+  # 1. コンテナの情報を指定
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 80
+    # 2. マウントするボリューム。後述のvolumesのnameと一致させる
+    volumeMounts:
+    - name: workdir
+      mountPath: /usr/share/nginx/html
+    # 3. 監視設定（詳細は「(LivenessProbe/ReadinessPorbe)」参照
+    livenessProbe:
+      exec:
+        command:
+        - cat
+        - /usr/share/nginx/html/index.html
+      initialDelaySeconds: 10
+      periodSeconds: 10
+    readinessProbe:
+      exec:
+        command:
+        - cat
+        - /usr/share/nginx/html/index.html
+      initialDelaySeconds: 5
+      periodSeconds: 5
+    # resourcesについては、LimitRange(PXX)を参照
+    resources:
+      # 4. コンテナをデプロイするときのリソースの要求量
+      requests:
+        cpu: 200m
+        memory: 100Mi
+      # 5. リソースの上限
+      limits:
+        cpu: 800m
+        memory: 400Mi
+  # 6. 再起動ポリシー
+  restartPolicy: Never
+  # 7. Nodeに紐付ける条件設定
+  readinessGates:
+    - conditionType: "www.example.com/feature-1"
+  # 8. 起動時の処理
+  initContainers:
+  - name: install
+    image: busybox
+    command:
+    - wget
+    - "-O"
+    - "/work-dir/index.html"
+    - http://kubernetes.io
+    volumeMounts:
+    - name: workdir
+      mountPath: "/work-dir"
+  dnsPolicy: Default
+  volumes:
+  - name: workdir
+    emptyDir: {}
+  # 9. Podの配置ルールを記述
+  affinity:
+    # ラベルapp=myappを持つPodを同じノードに配置する
+    #podAffinity:
+    #  requiredDuringSchedulingIgnoredDuringExecution:
+    #  - labelSelector:
+    #      matchExpressions:
+    #      - key: app
+    #        operator: In
+    #        values:
+    #        - myapp
+    #    topologyKey: failure-domain.beta.kubernetes.io/zone
+    # ラベルapp=myappを持つPodを同じノードに配置しない
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app
+              operator: In
+              values:
+              - myapp
+          topologyKey: kubernetes.io/hostname
+#10 ステータスの設定（ReadinessGatesとセットで指定）
+status:
+  conditions:
+    - type: Ready  # ベースのPodコンディション
+      status: "True"
+      lastProbeTime: null
+      lastTransitionTime: 2019-01-01T00:00:00Z
+    - type: "www.example.com/feature-1"   # 付随的なPodコンディション
+      status: "False"
+      lastProbeTime: null
+      lastTransitionTime: 2019-01-01T00:00:00Z
+  containerStatuses:
+    - containerID: docker://abcd...
+      ready: true
+      restartCount: 1
+      image: nginx
+      name: master
+      imageID: docker-pullable://nginx@sha256:abcd...

@@ -1,0 +1,25 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: k8s-fast
+spec:
+  # 1. アクセスモードをReadWriteOnce、ReadOnlyMany、ReadWriteManyの3つから選ぶ。
+  # マウントするストレージの特性により、指定できるオプションに制限がある
+  accessModes:
+  - ReadWriteOnce
+  # 2. 永続ストレージをFilesystem、またはrawの2つから指定する。
+  # rawの場合、ブロックストレージとして提供される
+  volumeMode: Filesystem
+  resources:
+    requests:
+      # 3. 提供するストレージのサイズ
+      storage: 8Gi
+  storageClassName: fast-gce
+  selector:
+    # 4. 以下のlabelが設定されているPersisntent Volumeを選択する
+    matchLabels:
+      env: "dev"
+    # 5. 条件に一致した場合に適用する
+    matchExpressions:
+    - {key: environment, operator: In, values: [dev]}
+

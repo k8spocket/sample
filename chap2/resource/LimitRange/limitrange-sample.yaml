@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: LimitRange
+metadata:
+  # 1. リソース名を指定
+  name: cpu-limit-range
+spec:
+  limits:
+  # 2. コンテナの制限、最小値、最大値を指定
+  - type: Container
+    default: # デフォルトの制限値
+      cpu: 1
+      memory: 256Mi
+    defaultRequest: # デフォルトの要求値
+      cpu: 0.5
+      memory: 128Mi
+    min: # 最小のリソース量
+      cpu: 0.1
+      memory: 32Mi
+    max: # 最大のリソース量
+      cpu: 2
+      memory: 512Mi
+  # 3. ストレージの要求値の制限
+  - type: PersistentVolumeClaim
+    min:
+      storage: 128Mi
+    max:
+      storage: 100Gi

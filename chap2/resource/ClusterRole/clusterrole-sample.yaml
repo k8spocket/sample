@@ -1,0 +1,12 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  # 1. リソース名を指定
+  name: secret-reader
+rules:
+# 2. APIグループを指定。""は、core API groupを意味する
+- apiGroups: [""]
+  # 3. 対象となるリソースを指定
+  resources: ["secrets"]
+  # 4. 許可する操作を指定
+  verbs: ["get", "watch", "list"]

@@ -1,0 +1,14 @@
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  # 1. 対象となるネームスペースを指定
+  namespace: default
+  # 2. ロール名を指定
+  name: pod-reader
+rules:
+  # 3. APIグループを指定。""はcore API groupを意味する
+- apiGroups: [""]
+  # 4. 対象となるリソースを指定
+  resources: ["pods"]
+  # 5. 許可する操作を指定
+  verbs: ["get", "watch", "list"]

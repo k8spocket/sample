@@ -1,0 +1,56 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-deployment
+  labels:
+    app: hello-pod
+spec:
+  # 1.Podのレプリカ数
+  replicas: 3
+
+  # 2.Podが起動してから利用可能とみなされるまでの時間(秒)
+  minReadySeconds: 0
+
+  # 3.Deploymentの試行時間(秒)
+  #    設定した時間を超えてもPodが作成されない場合、
+  #    エラー(ステータスが ProgressDeadlineExceeded)となる
+  progressDeadlineSeconds: 600
+
+  # 4.ロールバックのために保持するReplicaSetのバージョン数
+  revisionHistoryLimit: 2
+
+  # 5.DeploymentによるReplicaSet(Pod)の変更、更新の停止
+  #    更新を停止・禁止したい場合trueに設定。
+  paused: false
+
+  # ローリングアップデートの条件
+  strategy:
+  # 6.ReCreate(再作成)かRollingUpdateを指定
+    type: RollingUpdate
+    rollingUpdate:
+      # 7.レプリカ数を超えて一時的に増加するPodの割合
+      #    25%のときレプリカ数が100とするとPod数が最大125個まで一時的に増加する
+      maxSurge: 25%
+
+      # 8.利用不可能になるPodの最大割合
+      #   レプリカ数100のとき最大25個のPodが利用不可能になる
+      maxUnavailable: 25%
+
+  # 9.管理するPodのラベルセレクター
+  #   ここで指定したラベルのPodを管理する
+  selector:
+    matchLabels:
+      app: hello-pod
+  # 10.起動するPodの仕様。詳細はPodリソースを参照
+  template:
+    metadata:
+      # 11.作成されるPodに付与するラベル。基本上記9で指定したラベルを指定
+      labels:
+        app: hello-pod
+    spec:
+      containers:
+      - name: hello
+        image: nginx:1.14.2
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080

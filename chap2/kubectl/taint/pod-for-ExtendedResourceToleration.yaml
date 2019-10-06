@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: amd-cpu-pod
+spec:
+  containers:
+  - name: amd-cpu-container
+    image: library/nginx
+    resources:
+      limits:
+        amd.com/cpu: 1

@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pi
+spec:
+  # 1. Job完了後Jobが削除されるまでの秒数
+  ttlSecondsAfterFinished: 100
+  # 2. Jobを失敗とみなすまでのリトライ回数
+  backoffLimit: 4
+  # 3. 指定した秒数が経過するまでJobが実行可能
+  activeDeadlineSeconds: 100
+  # 4. 実行予定回数
+  completions: 1
+  template:
+    spec:
+      containers:
+      - name: pi
+        image: perl
+        command: ["perl",  "-Mbignum=bpi", "-wle", "print bpi(2000)"]
+      restartPolicy: Never

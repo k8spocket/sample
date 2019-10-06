@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: k8s.pocket.configmap
+spec:
+  containers:
+  - name: busybox
+    image: k8s.gcr.io/busybox
+    # /etc/config/keysにconfigmapsの設定を出力する
+    command: [ "/bin/sh","-c","ls /etc/config" ]
+    # volumeをマウントする。マウントするパスはmountPath
+    volumeMounts:
+    - name: config-volume
+      mountPath: /etc/config
+  # volumesとしてpathに記述したパスに設定する
+  volumes:
+    - name: config-volume
+      configMap:
+        name: configmapsample
+  restartPolicy: Never

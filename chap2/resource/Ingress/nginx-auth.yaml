@@ -1,0 +1,20 @@
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: nginx-auth
+  annotations:
+    # basic認証
+    nginx.ingress.kubernetes.io/auth-type: basic
+    # htpasswdファイル(ファイル名はauth)を格納したSecret
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    # 認証メッセージ
+    nginx.ingress.kubernetes.io/auth-realm: "Auth Sample for Nginx"
+spec:
+  rules:
+  - host: nginx.example.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nginx
+          servicePort: 80

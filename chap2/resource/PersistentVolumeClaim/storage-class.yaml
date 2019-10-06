@@ -1,0 +1,10 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: fast-gce
+provisioner: kubernetes.io/gce-pd
+parameters:
+  # SSDの永続ディスクを指定
+  type: pd-ssd
+
+

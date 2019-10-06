@@ -1,0 +1,13 @@
+﻿apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: hello-ing
+spec:
+  rules:
+  - host: test.k8spocket.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: hello-svc
+          servicePort: 80

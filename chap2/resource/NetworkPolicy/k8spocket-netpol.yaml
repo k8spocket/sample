@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: k8spocket-netpol
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      security-zone: internal
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          security-zone: dmz
+    ports:
+    - protocol: TCP
+      port: 8080
+  egress:
+  - {}

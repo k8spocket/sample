@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    app: myapp
+spec:
+  containers:
+  - name: myapp-container
+    image: incorrect_image // 存在しないイメージ名
+    command: ['sh', '-c', 'echo Hello Kubernetes! && sleep 3600']
+  imagePullSecrets:
+  - name: myrepository // ここの記載が誤っている・もしくは欠けている

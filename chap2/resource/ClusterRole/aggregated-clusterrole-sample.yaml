@@ -1,0 +1,11 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: monitoring
+# 1. aggregationRuleを設定
+aggregationRule:
+  # 2. 集約するClusterRoleをラベルで指定
+  clusterRoleSelectors:
+  - matchLabels:
+      rbac.example.com/aggregate-to-monitoring: "true"
+rules: [] # ルールはコントローラーマネージャーによって自動的に設定される

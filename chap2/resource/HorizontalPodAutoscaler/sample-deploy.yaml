@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-deploy
+  labels:
+    app: sample-deploy
+spec:
+  selector:
+    matchLabels:
+      app: sample-deploy
+  template:
+    metadata:
+      labels:
+        app: sample-deploy
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        resources:
+          requests:
+            cpu: 200m

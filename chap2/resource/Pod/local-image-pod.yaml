@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    app: myapp
+spec:
+  containers:
+  - name: myapp-container
+    image: your-local-image:v1 // ローカルのイメージ名
+    imagePullPolicy: IfNotPresent // 追記する。

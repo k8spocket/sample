@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmapsample
+data:
+  # キー:値のセットで設定値を指定
+  env: dev
+  # --from-fileから読み込んだ場合は、次のようなフォーマット
+  k8s.pocket.properties: |-
+    property.1=value-1
+    property.2=value-2
+    property.3=value-3
