@@ -1,0 +1,8 @@
+﻿Kubernetes Pocket Reference Sample Code
+
+Copyright 2019 岡本隆史, 佐藤聖規, 岩成祐樹, 正野勇嗣, 村上大河
+
+This sample includes configuration files written by 
+The Linux Foundation and The Kubernetes Authors.
+
+URL: https://kubernetes.io/
